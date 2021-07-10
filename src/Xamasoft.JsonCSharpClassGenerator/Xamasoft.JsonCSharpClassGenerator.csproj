@@ -8,8 +8,6 @@
     <Company>Xamasoft</Company>
     <Product>Json Class Generator</Product>
     <Copyright>Copyright © Xamasoft 2010-2013</Copyright>
-    <AssemblyVersion>1.5.1.0</AssemblyVersion>
-    <FileVersion>1.5.1.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
@@ -22,23 +20,5 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="PluralizeService.Core" Version="1.2.21147.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <None Include="JsonClassHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="JsonClassHelper.cs" />
   </ItemGroup>
 </Project>
