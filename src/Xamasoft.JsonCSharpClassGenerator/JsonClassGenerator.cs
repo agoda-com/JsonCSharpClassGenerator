@@ -92,7 +92,7 @@ namespace Xamasoft.JsonClassGenerator
             {
 
                 var parentFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                if (writeToDisk && !NoHelperClass && ExplicitDeserialization) File.WriteAllBytes(Path.Combine(TargetFolder, "JsonClassHelper.cs"), Properties.Resources.JsonClassHelper);
+                if (writeToDisk && !NoHelperClass && ExplicitDeserialization) File.WriteAllText(Path.Combine(TargetFolder, "JsonClassHelper.cs"), Constants.JsonHelper);
                 if (SingleFile)
                 {
                     WriteClassesToFile(Path.Combine(TargetFolder, MainClass + CodeWriter.FileExtension), Types);

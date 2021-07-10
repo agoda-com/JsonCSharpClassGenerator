@@ -7,6 +7,7 @@
     <Product>JsonClassGeneratorConsole</Product>
     <Copyright>Copyright ©  2013</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -21,7 +22,7 @@
     <PackageReference Include="Mono.Options" Version="5.3.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JsonCSharpClassGeneratorLib\JsonClassGeneratorLib.csproj" />
+    <ProjectReference Include="..\Xamasoft.JsonCSharpClassGenerator\Xamasoft.JsonCSharpClassGenerator.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="json-csharp-icon.ico" />
