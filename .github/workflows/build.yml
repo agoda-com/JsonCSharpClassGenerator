@@ -62,6 +62,7 @@ jobs:
     name: Deploy Packages
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Download Package artifact
         uses: actions/download-artifact@master
         with:
@@ -81,3 +82,21 @@ jobs:
 
       - name: Push to NuGet
         run: dotnet nuget push nupkg/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org --skip-duplicate
+
+      - name: publish build for Windows
+        run: dotnet publish .\JsonClassGeneratorConsole\JsonClassGeneratorConsole.csproj -r win-x64 -c Release --self-contained /p:PublishSingleFile=true
+
+      - name: publish build for Linux
+        run: dotnet publish .\JsonClassGeneratorConsole\JsonClassGeneratorConsole.csproj -r linux-x64 -c Release --self-contained /p:PublishSingleFile=true
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
+          fail_on_unmatched_files: true
+          files: | 
+                 src\JsonClassGeneratorConsole\bin\Release\net5.0\linux-x64\publish\JsonClassGeneratorConsole
+                 src\JsonClassGeneratorConsole\bin\Release\net5.0\win-x64\publish\JsonClassGeneratorConsole.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
