@@ -89,9 +89,22 @@ jobs:
       - name: publish build for Linux
         run: dotnet publish src/JsonClassGeneratorConsole/JsonClassGeneratorConsole.csproj /p:PublishSingleFile=true -r linux-x64 -c Release --self-contained 
 
+      - name: Create tag
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/v${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}",
+              sha: context.sha
+            })
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
           name: Release ${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
           fail_on_unmatched_files: true
           files: | 
