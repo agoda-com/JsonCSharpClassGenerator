@@ -58,10 +58,11 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main'
+    #if: github.ref == 'refs/heads/main'
     name: Deploy Packages
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Download Package artifact
         uses: actions/download-artifact@master
         with:
@@ -79,5 +80,45 @@ jobs:
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
 
-      # - name: Push to NuGet
-      #   run: dotnet nuget push nupkg/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org --skip-duplicate
+      - name: Push to NuGet
+        run: dotnet nuget push nupkg/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://nuget.org --skip-duplicate
+
+      - name: publish build for Windows
+        run: dotnet publish src/JsonClassGeneratorConsole/JsonClassGeneratorConsole.csproj /p:PublishSingleFile=true -r win-x64 -c Release --self-contained 
+
+
+      - name: publish build for Linux
+        run: dotnet publish src/JsonClassGeneratorConsole/JsonClassGeneratorConsole.csproj /p:PublishSingleFile=true -r linux-x64 -c Release --self-contained 
+
+      - name: Compress Linux
+        run: |
+          cd src/JsonClassGeneratorConsole/bin/Release/net5.0/win-x64/publish;
+          zip -r win-x64.zip .;
+          cd ..;cd ..;cd ..;cd ..;cd ..;cd ..;cd ..;
+          cd src/JsonClassGeneratorConsole/bin/Release/net5.0/linux-x64/publish;
+          zip -r linux-x64.zip .;
+
+      - name: Create tag
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/v${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}",
+              sha: context.sha
+            })
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
+          name: Release ${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
+          fail_on_unmatched_files: true
+          files: | 
+                 src/JsonClassGeneratorConsole/bin/Release/net5.0/linux-x64/publish/linux-x64.zip
+                 src/JsonClassGeneratorConsole/bin/Release/net5.0/win-x64/publish/win-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
