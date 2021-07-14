@@ -90,8 +90,13 @@ jobs:
       - name: publish build for Linux
         run: dotnet publish src/JsonClassGeneratorConsole/JsonClassGeneratorConsole.csproj /p:PublishSingleFile=true -r linux-x64 -c Release --self-contained 
 
-      - name: Compress
-        run: zip -r win-x64.zip src/JsonClassGeneratorConsole/bin/Release/net5.0/win-x64/publish;zip -r linux-x64.zip src/JsonClassGeneratorConsole/bin/Release/net5.0/linux-x64/publish
+      - name: Compress Linux
+        run: |
+          cd src/JsonClassGeneratorConsole/bin/Release/net5.0/win-x64/publish;
+          zip -r win-x64.zip .;
+          cd ..;cd ..;cd ..;cd ..;cd ..;cd ..;cd ..;
+          cd src/JsonClassGeneratorConsole/bin/Release/net5.0/linux-x64/publish;
+          zip -r linux-x64.zip .;
 
       - name: Create tag
         uses: actions/github-script@v3
@@ -112,8 +117,8 @@ jobs:
           name: Release ${{ env.MAJOR_MINOR_VERSION }}${{ github.run_number }}
           fail_on_unmatched_files: true
           files: | 
-                 linux-x64.zip
-                 win-x64.zip
+                 src/JsonClassGeneratorConsole/bin/Release/net5.0/linux-x64/publish/linux-x64.zip
+                 src/JsonClassGeneratorConsole/bin/Release/net5.0/win-x64/publish/win-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
