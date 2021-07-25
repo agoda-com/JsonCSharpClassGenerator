@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Mono.Options;
 using Xamasoft.JsonClassGenerator;
@@ -12,6 +12,7 @@ namespace JsonClassGeneratorConsole
 		private static string _targetFolder = Environment.CurrentDirectory;
 		private static bool _showHelp = false;
 		private static bool _pascalCase = false;
+		private static bool _useFeilds = false;
 		private static bool _singleFile = false;
 		private static string _inputFilename;
 
@@ -24,7 +25,8 @@ namespace JsonClassGeneratorConsole
 					                 {"c|class=", "the main class name", cn => _mainClassName = cn},
 					                 {"t|target=", "the target output folder", output => _targetFolder = output},
 					                 {"p|pascal", "use PascalCase", pc => _pascalCase = !string.IsNullOrWhiteSpace(pc)},
-					                 {"sf|single", "generate a single file", sf => _singleFile = !string.IsNullOrWhiteSpace(sf)},
+									 {"f|feilds", "use Feilds (Default is Properties)", f => _useFeilds = !string.IsNullOrWhiteSpace(f)},
+									 {"sf|single", "generate a single file", sf => _singleFile = !string.IsNullOrWhiteSpace(sf)},
 									 {"i|input=", "input json file to process", json => _inputFilename = json}
 				                 };
 
@@ -53,6 +55,7 @@ namespace JsonClassGeneratorConsole
 					          MainClass = _mainClassName,
 					          UsePascalCase = _pascalCase,
 					          SingleFile = _singleFile,
+							  UseProperties = !_useFeilds,
 							  Example = jsonFile
 				          };
 
